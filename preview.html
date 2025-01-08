@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -29,7 +29,7 @@
         <h4 class="text-center">PDF Preview</h4>
         <center>
         <div id="pdf-container" class="pdf-container">
-            <!-- PDF pages will be rendered here -->
+            
         </div>
 
             <div class="zoom-controls">
@@ -111,6 +111,103 @@
                 scale = Math.max(0.5, scale - 0.1); // Decrease scale, minimum 0.5
                 renderPDF(decodeURIComponent(file), scale); // Re-render the PDF with updated scale
             });
+        }
+    </script>
+</body>
+</html>
+ -->
+
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>PDF Preview</title>
+    <style>
+        body {
+            user-select: none; /* Disable text selection */
+        }
+        .pdf-container {
+            width: 65%;
+            height: 500px;
+            overflow-y: auto;
+            border: 1px solid rgb(0, 0, 0);
+            padding: 5px;
+        }
+        .pdf-page {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container my-3">
+        <h3 class="text-center">PDF Preview</h3>
+        <center>
+        <div id="pdf-container" class="pdf-container">
+            <!-- PDF pages will be rendered here -->
+        </div>
+        </center>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script>
+        // Disable right-click globally
+        document.addEventListener('contextmenu', (event) => {
+            event.preventDefault();
+            alert('Right-click is disabled.');
+        });
+
+        // Get the 'file' query parameter from the URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const file = urlParams.get('file');
+
+        if (!file) {
+            alert("No PDF file provided in the URL.");
+        } else {
+            // PDF.js settings
+            const pdfjsLib = window['pdfjs-dist/build/pdf'];
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+
+            const pdfContainer = document.getElementById('pdf-container');
+
+            // Render all pages of the PDF
+            const renderPDF = async (url) => {
+                try {
+                    const pdfDoc = await pdfjsLib.getDocument(url).promise;
+                    const totalPages = pdfDoc.numPages;
+
+                    for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
+                        const page = await pdfDoc.getPage(pageNumber);
+                        const viewport = page.getViewport({ scale: 1.1 });
+
+                        // Create a canvas for each page
+                        const canvas = document.createElement('canvas');
+                        canvas.className = 'pdf-page';
+                        canvas.width = viewport.width;
+                        canvas.height = viewport.height;
+
+                        const context = canvas.getContext('2d');
+
+                        const renderContext = {
+                            canvasContext: context,
+                            viewport: viewport,
+                        };
+
+                        // Render the page
+                        await page.render(renderContext).promise;
+
+                        // Append canvas to container
+                        pdfContainer.appendChild(canvas);
+                    }
+                } catch (error) {
+                    console.error(error);
+                    alert("Failed to load the PDF.");
+                }
+            };
+
+            // Load the PDF file
+            renderPDF(decodeURIComponent(file));
         }
     </script>
 </body>
