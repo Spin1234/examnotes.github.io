@@ -2,13 +2,13 @@
     {
         "title": "ip addressing in computer networks",
         "description": "A presentation on ip addressing in computer networks and its types.",
-        "cost": 5,
+        "cost":,
         "file": "ip_addressing.pdf"
     },
     {
-        "title": "PDF 2",
-        "description": "Learn web development.",
-        "cost": 15.49,
-        "file": "pdfs/pdf2.pdf"
+        "title": "Cyber Law Questions and Answers",
+        "description": "13 questins and answers for CA3 MAKAUT 8th sem",
+        "cost":,
+        "file": "Cyber_Law_CA3_8thsem.pdf"
     }
 ]
