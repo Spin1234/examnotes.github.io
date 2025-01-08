@@ -129,38 +129,58 @@
             user-select: none; /* Disable text selection */
         }
         .pdf-container {
-            width: 65%;
-            height: 500px;
+            width: 100%;
+            max-width: 800px; /* Set a max width for larger screens */
+            height: 60vh; /* Use relative height for better responsiveness */
             overflow-y: auto;
-            border: 1px solid rgb(0, 0, 0);
+            border: 1px solid #000;
             padding: 5px;
+            margin: 0 auto;
         }
         .pdf-page {
             margin-bottom: 20px;
+        }
+        .zoom-controls {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+        }
+        @media (max-width: 576px) {
+            .pdf-container {
+                height: 50vh; /* Adjust height for smaller screens */
+            }
+            .zoom-controls button {
+                width: 100%; /* Make buttons stack and occupy full width */
+            }
         }
     </style>
 </head>
 <body>
     <div class="container my-3">
         <h3 class="text-center">PDF Preview</h3>
-        <center>
         <div id="pdf-container" class="pdf-container">
             <!-- PDF pages will be rendered here -->
         </div>
-        </center>
+
+        <div class="zoom-controls">
+            <button id="zoom-in" class="btn btn-primary">Zoom In</button>
+            <button id="zoom-out" class="btn btn-secondary">Zoom Out</button>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script>
-        // Disable right-click globally
+        // Disable right-click globally without alert
         document.addEventListener('contextmenu', (event) => {
             event.preventDefault();
-            alert('Right-click is disabled.');
         });
 
         // Get the 'file' query parameter from the URL
         const urlParams = new URLSearchParams(window.location.search);
         const file = urlParams.get('file');
+        let scale = 1.1; // Initial zoom scale
 
         if (!file) {
             alert("No PDF file provided in the URL.");
@@ -172,14 +192,15 @@
             const pdfContainer = document.getElementById('pdf-container');
 
             // Render all pages of the PDF
-            const renderPDF = async (url) => {
+            const renderPDF = async (url, scale) => {
                 try {
+                    pdfContainer.innerHTML = ""; // Clear previous content
                     const pdfDoc = await pdfjsLib.getDocument(url).promise;
                     const totalPages = pdfDoc.numPages;
 
                     for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
                         const page = await pdfDoc.getPage(pageNumber);
-                        const viewport = page.getViewport({ scale: 1.1 });
+                        const viewport = page.getViewport({ scale });
 
                         // Create a canvas for each page
                         const canvas = document.createElement('canvas');
@@ -207,8 +228,21 @@
             };
 
             // Load the PDF file
-            renderPDF(decodeURIComponent(file));
+            renderPDF(decodeURIComponent(file), scale);
+
+            // Zoom in functionality
+            document.getElementById('zoom-in').addEventListener('click', () => {
+                scale += 0.1; // Increase scale
+                renderPDF(decodeURIComponent(file), scale); // Re-render the PDF with updated scale
+            });
+
+            // Zoom out functionality
+            document.getElementById('zoom-out').addEventListener('click', () => {
+                scale = Math.max(0.5, scale - 0.1); // Decrease scale, minimum 0.5
+                renderPDF(decodeURIComponent(file), scale); // Re-render the PDF with updated scale
+            });
         }
     </script>
 </body>
 </html>
+
