@@ -1,9 +1,9 @@
 [
     {
-        "title": "PDF 1",
-        "description": "A detailed guide on AI.",
-        "cost": 10.99,
-        "file": "./dsa.pdf"
+        "title": "ip addressing in computer networks",
+        "description": "A presentation on ip addressing in computer networks and its types.",
+        "cost": INR 5,
+        "file": "ip_addressing.pdf"
     },
     {
         "title": "PDF 2",
