@@ -175,7 +175,6 @@
         // Get the 'file' query parameter from the URL
         const urlParams = new URLSearchParams(window.location.search);
         const file = urlParams.get('file');
-        let scale = 1.1; // Initial zoom scale
 
         if (!file) {
             alert("No PDF file provided in the URL.");
