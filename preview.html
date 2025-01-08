@@ -137,22 +137,9 @@
             padding: 5px;
             margin: 0 auto;
         }
-        .pdf-page {
-            margin-bottom: 20px;
-        }
-        .zoom-controls {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
-        }
         @media (max-width: 576px) {
             .pdf-container {
                 height: 50vh; /* Adjust height for smaller screens */
-            }
-            .zoom-controls button {
-                width: 100%; /* Make buttons stack and occupy full width */
             }
         }
     </style>
@@ -165,7 +152,6 @@
         </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script>
         // Disable right-click globally without alert
         document.addEventListener('contextmenu', (event) => {
