@@ -1,0 +1,14 @@
+[
+    {
+        "title": "PDF 1",
+        "description": "A detailed guide on AI.",
+        "cost": 10.99,
+        "file": "./dsa.pdf"
+    },
+    {
+        "title": "PDF 2",
+        "description": "Learn web development.",
+        "cost": 15.49,
+        "file": "pdfs/pdf2.pdf"
+    }
+]
