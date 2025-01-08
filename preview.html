@@ -28,6 +28,11 @@
         <div id="pdf-container" class="pdf-container">
             <!-- PDF pages will be rendered here -->
         </div>
+
+            <div class="zoom-controls">
+            <button id="zoom-in" class="btn btn-primary">Zoom In</button>
+            <button id="zoom-out" class="btn btn-secondary">Zoom Out</button>
+        </div>
         </center>
     </div>
 
@@ -42,6 +47,7 @@
         // Get the 'file' query parameter from the URL
         const urlParams = new URLSearchParams(window.location.search);
         const file = urlParams.get('file');
+        let scale = 1.1; // Initial zoom scale
 
         if (!file) {
             alert("No PDF file provided in the URL.");
@@ -53,14 +59,15 @@
             const pdfContainer = document.getElementById('pdf-container');
 
             // Render all pages of the PDF
-            const renderPDF = async (url) => {
+            const renderPDF = async (url, scale) => {
                 try {
+                    pdfContainer.innerHTML = ""; // Clear previous content
                     const pdfDoc = await pdfjsLib.getDocument(url).promise;
                     const totalPages = pdfDoc.numPages;
 
                     for (let pageNumber = 1; pageNumber <= totalPages; pageNumber++) {
                         const page = await pdfDoc.getPage(pageNumber);
-                        const viewport = page.getViewport({ scale: 1.1 });
+                        const viewport = page.getViewport({ scale });
 
                         // Create a canvas for each page
                         const canvas = document.createElement('canvas');
@@ -88,7 +95,19 @@
             };
 
             // Load the PDF file
-            renderPDF(decodeURIComponent(file));
+            renderPDF(decodeURIComponent(file), scale);
+
+            // Zoom in functionality
+            document.getElementById('zoom-in').addEventListener('click', () => {
+                scale += 0.1; // Increase scale
+                renderPDF(decodeURIComponent(file), scale); // Re-render the PDF with updated scale
+            });
+
+            // Zoom out functionality
+            document.getElementById('zoom-out').addEventListener('click', () => {
+                scale = Math.max(0.5, scale - 0.1); // Decrease scale, minimum 0.5
+                renderPDF(decodeURIComponent(file), scale); // Re-render the PDF with updated scale
+            });
         }
     </script>
 </body>
